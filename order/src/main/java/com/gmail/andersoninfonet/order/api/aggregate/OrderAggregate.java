@@ -1,6 +1,8 @@
 package com.gmail.andersoninfonet.order.api.aggregate;
 
+import com.gmail.andersoninfonet.common.commands.CancelOrderCommand;
 import com.gmail.andersoninfonet.common.commands.CompleteOrderCommand;
+import com.gmail.andersoninfonet.common.events.OrderCancelledEvent;
 import com.gmail.andersoninfonet.common.events.OrderCompletedEvent;
 import com.gmail.andersoninfonet.common.model.enums.OrderStatus;
 import com.gmail.andersoninfonet.order.api.command.CreateOrderCommand;
@@ -61,6 +63,17 @@ public class OrderAggregate {
 
     @EventSourcingHandler
     public void on(OrderCompletedEvent event) {
+        this.orderStatus = event.getOrderStatus();
+    }
+
+    @CommandHandler
+    public void handle(CancelOrderCommand cancelOrderCommand) {
+
+        AggregateLifecycle.apply(new OrderCancelledEvent(cancelOrderCommand.orderId(), cancelOrderCommand.orderStatus()));
+    }
+
+    @EventSourcingHandler
+    public void on(OrderCancelledEvent event) {
         this.orderStatus = event.getOrderStatus();
     }
 }

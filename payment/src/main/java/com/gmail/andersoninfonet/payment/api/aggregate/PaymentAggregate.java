@@ -1,7 +1,10 @@
 package com.gmail.andersoninfonet.payment.api.aggregate;
 
+import com.gmail.andersoninfonet.common.commands.CancelPaymentCommand;
 import com.gmail.andersoninfonet.common.commands.ValidatePaymentCommand;
+import com.gmail.andersoninfonet.common.events.PaymentCancelledEvent;
 import com.gmail.andersoninfonet.common.events.PaymentProcessedEvent;
+import com.gmail.andersoninfonet.common.model.enums.PaymentStatus;
 
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
@@ -22,7 +25,7 @@ public class PaymentAggregate {
     @AggregateIdentifier
     private String paymentId; 
     private String orderId; 
-    private String paymentStatus;
+    private PaymentStatus paymentStatus;
 
     @CommandHandler
     public PaymentAggregate(ValidatePaymentCommand validatePaymentCommand) {
@@ -41,5 +44,16 @@ public class PaymentAggregate {
     public void on(PaymentProcessedEvent event) {
         this.orderId = event.getOrderId();
         this.paymentId = event.getPaymentId();
+    }
+
+    @CommandHandler
+    public void handle(CancelPaymentCommand cancelPaymentCommand) {
+
+        AggregateLifecycle.apply(new PaymentCancelledEvent(cancelPaymentCommand.paymentId(), cancelPaymentCommand.orderId(), cancelPaymentCommand.paymentStatus()));
+    }
+
+    @EventSourcingHandler
+    public void on(PaymentCancelledEvent event) {
+        this.paymentStatus = event.getPaymentStatus();
     }
 }

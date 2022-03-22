@@ -8,7 +8,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.gmail.andersoninfonet.payment.api.model.enums.PaymentStatus;
+import com.gmail.andersoninfonet.common.model.enums.PaymentStatus;
 
 import lombok.Data;
 

@@ -1,8 +1,8 @@
 package com.gmail.andersoninfonet.common.model.enums;
 
-public enum OrderStatus {
+public enum PaymentStatus {
     
-    CREATED,
-    APPROVED,
+    COMPLETED,
+    FAIL,
     CANCELLED
 }
